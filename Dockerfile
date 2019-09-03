@@ -81,8 +81,9 @@ RUN nexe \
     --output /dist/protoc-gen-ts \
     --target alpine-x64-10.15.3 \
     index.js
-RUN upx /dist/*
-
+# RUN upx /dist/*
+# ^^ some issues with strippping nexe binaries, TODO: resolve this
+# https://github.com/nexe/nexe/issues/523
 
 # FINAL IMAGE
 FROM alpine:latest
