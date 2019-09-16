@@ -1,40 +1,13 @@
-# SCALA PLUGIN
-#
-# In the future, lets see if we can figure out how to native-image scalapbc
-# having to invoke the JVM for just running a command line tool. However, for
-# now, it feels like too much work to figure out how to get native-image to
-# compile this due to some complexities (it is not a single JAR file but rather
-# many, with the command line invocation handled via bash script, sigh) so we'll
-# install the JRE on the prod image, sigh.
-#
-# Native-builder solution would have started as such:
-#
-#   FROM oracle/graalvm-ce:19.2.0 as scala-builder
-#   RUN gu install native-image
-#
-# See github.com/mroth/scalafmt-native for an example Dockerfile building
-# something with native-image, if we want to try to figure that out later.
-# FROM alpine:latest as scala-unpacker
-# ARG REPO_ROOT=https://github.com/scalapb/ScalaPB
-# ARG VERSION=0.9.0
-# RUN apk add --no-cache wget zip
-# WORKDIR /dist
-# RUN wget ${REPO_ROOT}/releases/download/v${VERSION}/scalapbc-${VERSION}.zip \
-#     && unzip scalapbc-${VERSION}.zip \
-#     && mv scalapbc-${VERSION} scalapbc \
-#     && rm scalapbc/bin/*.bat \
-#     && rm scalapbc-${VERSION}.zip
-
 # SCALA PLUGIN PART DEUX
 #
 # A native release is now in progress! See https://github.com/scalapb/ScalaPB/issues/637
 #
-# TODO: update this once actually released (0.9.1?) with issues ironed out.
+# TODO: potentially update this once released (0.9.2?) with naming issues ironed out.
 FROM alpine:latest as scala-builder
 RUN apk add --no-cache wget zip binutils upx
 
 ARG REPO_ROOT=https://github.com/scalapb/ScalaPB
-ARG VERSION=0.9.1-test2
+ARG VERSION=0.9.1
 ARG PLATFORM=linux-x86_64
 ENV DOWNLOAD_FILE=protoc-gen-scalapb-${VERSION}-${PLATFORM}.zip
 ENV DOWNLOAD_URL=${REPO_ROOT}/releases/download/v${VERSION}/${DOWNLOAD_FILE}
@@ -92,27 +65,11 @@ ARG DST=/usr/local/bin
 # protobuf itself -- protobuf-dev is also needed for certain things (e.g.
 # using certain protoc extensions)
 RUN apk add --no-cache protobuf protobuf-dev
-
-# Typescript alternative
+# plugins
 COPY --from=ts-builder /dist/protoc-gen-ts ${DST}/protoc-gen-ts
-# Scala plugin install part deux
 COPY --from=scala-builder /dist/protoc-gen-scalapb ${DST}/protoc-gen-scala
-# Go plugin install
 COPY --from=go-builder /go/bin/protoc-gen-go ${DST}/protoc-gen-go
-# Docgen install
 COPY --from=go-builder /go/bin/protoc-gen-doc ${DST}/protoc-gen-doc
-
-# Scala version install. The bash scripts in "./bin/foo" literally rely on
-# "../lib/foo.jar" relative pathing to find the JAR files they wrap (really?),
-# so since we can't really just drop a bunch of jar files in /usr/lib root
-# directory, we stick this elsewhere..
-#
-# Attempting to symlink the wrappers causes errors because the wrappers then try
-# to use the symlink root instead of the resolved path due to a path resolution
-# bug, so the Scala solution just has to live at a different path for now.
-# COPY --from=scala-unpacker /dist/scalapbc/bin/* /usr/local/bin
-# COPY --from=scala-unpacker /dist/scalapbc/lib/* /usr/local/lib
-
 
 WORKDIR /src
 CMD ["/usr/bin/protoc", "--help"]
