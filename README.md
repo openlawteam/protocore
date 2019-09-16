@@ -60,11 +60,12 @@ Makefile) in the [`example/`](example/) directory.
 If you work directly with protocore from the command line often (doubtful, but
 it's possible!), you may wish to make an alias such as:
 
-    TODO
+    alias protocore='docker run --rm -it -v "$(pwd)":/src openlaw/protocore'
 
 This enables you to simply prepend `protocore` to any protoc command you may
-with to run, and have it work in the controlled container environment without
-requiring you to configure stuffs locally:
+with to run while working with your local filesystem, and have it work in the
+controlled container environment without requiring you to configure stuffs
+locally:
 
 ```shell
 $ protocore protoc --scala_out=. helloworld.proto
