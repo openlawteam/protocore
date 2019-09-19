@@ -1,9 +1,10 @@
 # protocore
 
-Everything needed to generate protobuf files for common languages used across OpenLaw, with zero dependencies.
+Everything needed to generate protobuf files for common languages used across
+OpenLaw, with zero dependencies.
 
-1. Includes the default `protoc` protocol buffer code generation tool, along with dev
-   extensions.
+1. Includes the default `protoc` protocol buffer code generation tool, along
+   with dev extensions.
 
 2. Adds plugins for support for the following language generation:
    - [Scala](https://scalapb.github.io/scalapbc.html)
@@ -20,7 +21,7 @@ require any runtime dependencies such as the JVM or NodeJS.**
 _Typically you won't be invoking this directly unless you need it -- it is
 primarily intended for reproducible builds across CI and Makefiles._
 
-Generally, you can just treat `openlaw/protocure` as an environment that has the
+Generally, you can just treat `openlaw/protocore` as an environment that has the
 `protoc` and all the plugins tools setup and in the path. Protocore uses `/src`
 as it's default WORKDIR, so if you volume mount the directory you want to work
 on to there, you can use it to generate files in your local filesystem.
