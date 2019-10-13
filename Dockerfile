@@ -7,16 +7,16 @@ FROM alpine:latest as scala-builder
 RUN apk add --no-cache wget zip binutils upx
 
 ARG REPO_ROOT=https://github.com/scalapb/ScalaPB
-ARG VERSION=0.9.1
+ARG VERSION=0.9.4
 ARG PLATFORM=linux-x86_64
-ENV DOWNLOAD_FILE=protoc-gen-scalapb-${VERSION}-${PLATFORM}.zip
+ENV DOWNLOAD_FILE=protoc-gen-scala-${VERSION}-${PLATFORM}.zip
 ENV DOWNLOAD_URL=${REPO_ROOT}/releases/download/v${VERSION}/${DOWNLOAD_FILE}
 
 WORKDIR /dist
 RUN wget --quiet ${DOWNLOAD_URL} \
     && unzip ${DOWNLOAD_FILE} \
-    && strip protoc-gen-scalapb \
-    && upx protoc-gen-scalapb
+    && strip protoc-gen-scala \
+    && upx protoc-gen-scala
 
 # GO PLUGIN
 #
@@ -67,7 +67,7 @@ ARG DST=/usr/local/bin
 RUN apk add --no-cache protobuf protobuf-dev
 # plugins
 COPY --from=ts-builder /dist/protoc-gen-ts ${DST}/protoc-gen-ts
-COPY --from=scala-builder /dist/protoc-gen-scalapb ${DST}/protoc-gen-scala
+COPY --from=scala-builder /dist/protoc-gen-scala ${DST}/protoc-gen-scala
 COPY --from=go-builder /go/bin/protoc-gen-go ${DST}/protoc-gen-go
 COPY --from=go-builder /go/bin/protoc-gen-doc ${DST}/protoc-gen-doc
 
