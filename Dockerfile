@@ -1,8 +1,6 @@
-# SCALA PLUGIN PART DEUX
+# SCALA PLUGIN
 #
 # A native release is now in progress! See https://github.com/scalapb/ScalaPB/issues/637
-#
-# TODO: potentially update this once released (0.9.2?) with naming issues ironed out.
 FROM alpine:latest as scala-builder
 RUN apk add --no-cache wget zip binutils upx
 
