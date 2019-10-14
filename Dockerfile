@@ -21,7 +21,7 @@ RUN wget --quiet ${DOWNLOAD_URL} \
 # It is trivially fast to just compile our own optimized and stripped binary
 # distribution of the go protoc plugin, so just do that instead of messing with
 # finding a binary distribution we like.
-FROM golang:1.12-alpine as go-builder
+FROM golang:1.13-alpine as go-builder
 RUN apk add --no-cache git upx
 ENV GO111MODULE=on
 RUN go get -ldflags="-s -w" \
