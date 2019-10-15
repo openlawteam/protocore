@@ -1,0 +1,7 @@
+example/README.md linguist-generated=true
+example/go/* linguist-generated=true
+example/js/* linguist-generated=true
+example/scala/* linguist-generated=true
+
+test/*.proto linguist-vendored=true
+test/expect/* linguist-generated=true
